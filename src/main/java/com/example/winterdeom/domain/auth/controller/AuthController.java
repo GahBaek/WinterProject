@@ -27,10 +27,4 @@ public class AuthController {
         this.authService.join(joinDto, response);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "join successfully"), HttpStatus.OK);
     }
-
-//    @Operation(summary = "JWT 인증이 필요한 API", description = "JWT 토큰을 포함해야 호출할 수 있습니다.",
-//            security = @SecurityRequirement(name = "BearerAuth"))
-//    @GetMapping("/hello")
-//    public ResponseEntity<String> hello(HttpServletResponse response) {
-//        return ResponseEntity.ok("hello");
 }
