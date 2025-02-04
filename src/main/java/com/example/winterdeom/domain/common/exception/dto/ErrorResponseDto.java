@@ -1,6 +1,6 @@
-package com.hackathonteam1.refreshrator.dto;
+package com.example.winterdeom.domain.common.exception.dto;
 
-import com.hackathonteam1.refreshrator.exception.CustomException;
+import com.example.winterdeom.domain.common.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
