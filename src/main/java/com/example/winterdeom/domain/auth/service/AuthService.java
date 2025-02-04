@@ -24,10 +24,15 @@ public class AuthService {
     private final PasswordHashEncryption passwordHashEncryption;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /*
+    회원가입
+     */
     public void join(LoginDto loginDto, HttpServletResponse response) {
+        // 이메일이 이미 존재하는지 확인
         this.isEmailExist(loginDto.getEmail());
         String encryptedPassword = this.passwordHashEncryption.encrypt(loginDto.getPassword());
 
+        // 이메일이 존재하지 않는다면 새로운 User 생성
         User user = User.builder()
                 .email(loginDto.getEmail())
                 .password(encryptedPassword)
@@ -35,6 +40,10 @@ public class AuthService {
 
         authRepository.save(user);
     }
+
+    /*
+    Email 유일성 확인
+     */
     public void isEmailExist(String email) {
         User user = this.authRepository.findByEmail(email);
         if (user != null) {
@@ -42,8 +51,12 @@ public class AuthService {
         }
     }
 
+    /*
+    login
+     */
     public void login(LoginDto loginDto, HttpServletResponse response) {
         User user = this.authRepository.findByEmail(loginDto.getEmail());
+
         if(user == null) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
