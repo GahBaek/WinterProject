@@ -1,9 +1,9 @@
 package com.example.winterdeom.global.auth;
 
-import com.example.airplaneletter.errorCode.ErrorCode;
-import com.example.airplaneletter.exception.NotFoundException;
-import com.example.airplaneletter.model.User;
-import com.example.airplaneletter.repository.UserRepository;
+import com.example.winterdeom.domain.auth.repository.AuthRepository;
+import com.example.winterdeom.domain.common.error.ErrorCode;
+import com.example.winterdeom.domain.common.exception.NotFoundException;
+import com.example.winterdeom.domain.user.domain.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class AuthenticationInterceptor implements HandlerInterceptor {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationContext authenticationContext;
-    private final UserRepository userRepository;
+    private final AuthRepository userRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

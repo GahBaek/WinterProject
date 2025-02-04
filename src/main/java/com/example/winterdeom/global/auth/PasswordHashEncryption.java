@@ -14,8 +14,8 @@ import java.util.Base64;
 public class PasswordHashEncryption {
     private static final String PBKDF2_WITH_SHA1 = "PBKDF2WithHmacSHA1";
     private final String salt;
-    private final int iterationCount;// 반복 횟수
-    private final int keyLength;// 키 길이
+    private final int iterationCount;
+    private final int keyLength;
 
     public PasswordHashEncryption(@Value("${encryption.pbkdf2.salt}") final String salt,
                                   @Value("${encryption.pbkdf2.iteration-count}") final int iterationCount,

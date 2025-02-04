@@ -1,7 +1,8 @@
 package com.example.winterdeom.global.auth;
 
-import com.example.airplaneletter.errorCode.ErrorCode;
-import com.example.airplaneletter.exception.UnauthorizedException;
+import com.example.winterdeom.domain.common.error.ErrorCode;
+
+import com.example.winterdeom.domain.common.exception.UnauthorizedException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    //회원가입
+
     @PostMapping("auth/join")
     public ResponseEntity<ResponseDto<Void>> join(@Valid @RequestBody LoginDto joinDto, HttpServletResponse response) {
         this.authService.join(joinDto, response);
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "login successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "join successfully"), HttpStatus.OK);
     }
-    //로그인
+
     @PostMapping("/auth/login")
     public ResponseEntity<ResponseDto<Void>> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         this.authService.login(loginDto, response);
