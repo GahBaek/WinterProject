@@ -49,7 +49,6 @@ public enum ErrorCode {
             case "NotBlank" -> NOT_BLANK;
             case "Pattern" -> REGEX;
             case "Length" -> LENGTH;
-            case "AssertTrue" -> ASSERT_TRUE;
             default -> throw new IllegalArgumentException("Unexpected value: " + code);
         };
     }
