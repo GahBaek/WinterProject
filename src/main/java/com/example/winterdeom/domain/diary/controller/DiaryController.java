@@ -3,15 +3,16 @@ package com.example.winterdeom.domain.diary.controller;
 import com.example.winterdeom.domain.diary.dto.req.DiaryRequest;
 import com.example.winterdeom.domain.diary.dto.req.DiaryUpdateRequest;
 import com.example.winterdeom.domain.diary.dto.res.DiaryResponse;
+import com.example.winterdeom.domain.diary.dto.res.DiaryPageResponse;
 import com.example.winterdeom.domain.diary.service.DiaryService;
 import com.example.winterdeom.domain.user.domain.User;
 import com.example.winterdeom.global.auth.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/diary")
@@ -38,4 +39,17 @@ public class DiaryController {
         diaryService.deleteDiary(user, diaryId);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/{diaryId}")
+    public ResponseEntity<DiaryResponse> getDiary(@AuthenticatedUser User user, @PathVariable Long diaryId) {
+        DiaryResponse diaryResponse = diaryService.getDiary(user, diaryId);
+        return ResponseEntity.ok(diaryResponse);
+    }
+    @GetMapping("/my-diaries")
+    public ResponseEntity<DiaryPageResponse> getMyDiaries(@AuthenticatedUser User user,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size) {
+        DiaryPageResponse diaries = diaryService.getMyDiaries(user, page, size);
+        return ResponseEntity.ok(diaries);
+    }
+
 }

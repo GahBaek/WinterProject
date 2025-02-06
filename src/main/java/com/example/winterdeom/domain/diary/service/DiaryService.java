@@ -9,12 +9,18 @@ import com.example.winterdeom.domain.diary.domain.repository.DiaryRepository;
 import com.example.winterdeom.domain.diary.dto.req.DiaryRequest;
 import com.example.winterdeom.domain.diary.dto.req.DiaryUpdateRequest;
 import com.example.winterdeom.domain.diary.dto.res.DiaryResponse;
+import com.example.winterdeom.domain.diary.dto.res.DiaryPageResponse;
+import com.example.winterdeom.domain.diary.dto.res.DiarySummaryResponse;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +70,21 @@ public class DiaryService {
 
         diaryRepository.delete(diary);
     }
+    @Transactional(readOnly = true)
+    public DiaryResponse getDiary(User user, Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+
+        return convertToDiaryResponse(diary);
+    }
+
+    @Transactional(readOnly = true)
+    public DiaryPageResponse getMyDiaries(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Diary> diaryPage = diaryRepository.findByUser(user, pageable);
+        return convertToDiaryPageResponse(diaryPage);
+    }
+
 
     private DiaryResponse convertToDiaryResponse(Diary diary) {
         return DiaryResponse.builder()
@@ -75,4 +96,25 @@ public class DiaryService {
                 .createdTime(diary.getCreatedAt())
                 .build();
     }
+
+    private DiaryPageResponse convertToDiaryPageResponse(Page<Diary> diaryPage) {
+        return DiaryPageResponse.builder()
+                .content(diaryPage.getContent().stream()
+                        .map(this::convertToDiarySummaryResponse)
+                        .collect(Collectors.toList())) // 개별 요약 리스트 변환
+                .currentPage(diaryPage.getNumber()) // 현재 페이지
+                .totalPages(diaryPage.getTotalPages()) // 전체 페이지 수
+                .totalElements(diaryPage.getTotalElements()) // 전체 개수
+                .last(diaryPage.isLast()) // 마지막 페이지 여부
+                .build();
+    }
+    private DiarySummaryResponse convertToDiarySummaryResponse(Diary diary) {
+        return DiarySummaryResponse.builder()
+                .diaryId(diary.getId())
+                .emotion(diary.getEmotion())
+                .content(diary.getContent())
+                .build();
+    }
+
+
 }
