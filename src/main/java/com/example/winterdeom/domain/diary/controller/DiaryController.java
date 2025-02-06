@@ -32,4 +32,10 @@ public class DiaryController {
         DiaryResponse updatedDiary = diaryService.updateDiary(user, diaryId, request);
         return ResponseEntity.ok(updatedDiary);
     }
+    @DeleteMapping("/delete/{diaryId}")
+    public ResponseEntity<Void> deleteDiary(@AuthenticatedUser User user,
+                                            @PathVariable Long diaryId) {
+        diaryService.deleteDiary(user, diaryId);
+        return ResponseEntity.noContent().build();
+    }
 }

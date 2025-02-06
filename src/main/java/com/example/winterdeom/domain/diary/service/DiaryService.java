@@ -53,7 +53,17 @@ public class DiaryService {
         return convertToDiaryResponse(diary);
     }
 
+    @Transactional
+    public void deleteDiary(User user, Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
+        if (!diary.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
+        }
+
+        diaryRepository.delete(diary);
+    }
 
     private DiaryResponse convertToDiaryResponse(Diary diary) {
         return DiaryResponse.builder()
