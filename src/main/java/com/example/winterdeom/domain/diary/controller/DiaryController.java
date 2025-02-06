@@ -1,5 +1,6 @@
 package com.example.winterdeom.domain.diary.controller;
 
+import com.example.winterdeom.domain.diary.domain.Emotion;
 import com.example.winterdeom.domain.diary.dto.req.DiaryRequest;
 import com.example.winterdeom.domain.diary.dto.req.DiaryUpdateRequest;
 import com.example.winterdeom.domain.diary.dto.res.DiaryResponse;
@@ -8,8 +9,6 @@ import com.example.winterdeom.domain.diary.service.DiaryService;
 import com.example.winterdeom.domain.user.domain.User;
 import com.example.winterdeom.global.auth.AuthenticatedUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +49,16 @@ public class DiaryController {
                                                           @RequestParam(defaultValue = "10") int size) {
         DiaryPageResponse diaries = diaryService.getMyDiaries(user, page, size);
         return ResponseEntity.ok(diaries);
+    }
+    @GetMapping("/emotion")
+    public ResponseEntity<DiaryPageResponse> getDiariesByEmotion(
+            @AuthenticatedUser User user,
+            @RequestParam(name = "emotion") Emotion emotion,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        DiaryPageResponse response = diaryService.getDiariesByEmotion(user, emotion, page, size);
+        return ResponseEntity.ok(response);
     }
 
 }

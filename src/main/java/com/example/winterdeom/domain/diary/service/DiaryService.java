@@ -5,6 +5,7 @@ import com.example.winterdeom.domain.common.exception.ForbiddenException;
 import com.example.winterdeom.domain.common.exception.NotFoundException;
 import com.example.winterdeom.domain.common.exception.UnauthorizedException;
 import com.example.winterdeom.domain.diary.domain.Diary;
+import com.example.winterdeom.domain.diary.domain.Emotion;
 import com.example.winterdeom.domain.diary.domain.repository.DiaryRepository;
 import com.example.winterdeom.domain.diary.dto.req.DiaryRequest;
 import com.example.winterdeom.domain.diary.dto.req.DiaryUpdateRequest;
@@ -13,13 +14,11 @@ import com.example.winterdeom.domain.diary.dto.res.DiaryPageResponse;
 import com.example.winterdeom.domain.diary.dto.res.DiarySummaryResponse;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,15 +74,41 @@ public class DiaryService {
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
+        if (!diary.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
+        }
+
         return convertToDiaryResponse(diary);
     }
 
+
+
     @Transactional(readOnly = true)
     public DiaryPageResponse getMyDiaries(User user, int page, int size) {
+        if (user == null) {
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Diary> diaryPage = diaryRepository.findByUser(user, pageable);
         return convertToDiaryPageResponse(diaryPage);
     }
+
+    @Transactional(readOnly = true)
+    public DiaryPageResponse getDiariesByEmotion(User user, Emotion emotion, int page, int size) {
+        if (user == null) {
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Diary> diaryPage = diaryRepository.findByEmotion(emotion, pageable);
+
+        List<Diary> userDiaries = diaryPage.getContent().stream()
+                .filter(diary -> diary.getUser().getId().equals(user.getId()))
+                .collect(Collectors.toList());
+
+        Page<Diary> filteredPage = new PageImpl<>(userDiaries, pageable, userDiaries.size());
+        return convertToDiaryPageResponse(filteredPage);
+    }
+
 
 
     private DiaryResponse convertToDiaryResponse(Diary diary) {

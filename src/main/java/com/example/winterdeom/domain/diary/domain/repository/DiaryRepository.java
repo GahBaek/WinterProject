@@ -15,8 +15,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     Page<Diary> findByUser(User user, Pageable pageable);
 
     // 특정 감정을 가진 일기 목록 조회
-    List<Diary> findByEmotion(Emotion emotion);
-
-    // 특정 날짜 이후의 일기 목록 조회
-    List<Diary> findByCreatedAtAfter(LocalDateTime date);
+    Page<Diary> findByEmotion(Emotion emotion, Pageable pageable);
 }
