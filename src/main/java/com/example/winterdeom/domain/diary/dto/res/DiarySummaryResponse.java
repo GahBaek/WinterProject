@@ -1,6 +1,7 @@
 package com.example.winterdeom.domain.diary.dto.res;
 
 import com.example.winterdeom.domain.diary.domain.Emotion;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Schema(description = "일기 간단 응답 DTO")
 public class DiarySummaryResponse {
-    private Long diaryId;  // 다이어리 ID
-    private Emotion emotion;  // 감정
-    private String content;  // 내용
+    @Schema(description = "일기 ID", example = "5")
+    private Long diaryId;
+
+    @Schema(description = "감정", example = "HAPPY")
+    private Emotion emotion;
+
+    @Schema(description = "내용", example = "오늘 하루가 좋았다!")
+    private String content;
 }

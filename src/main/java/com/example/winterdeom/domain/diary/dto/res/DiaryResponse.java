@@ -1,6 +1,7 @@
 package com.example.winterdeom.domain.diary.dto.res;
 
 import com.example.winterdeom.domain.diary.domain.Emotion;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,11 +13,23 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "일기 상세 응답 DTO")
 public class DiaryResponse {
+    @Schema(description = "일기 ID", example = "1")
     private Long diaryId;
-    private String email; // 작성자 이메일
-    private Emotion emotion; //감정이모티콘
-    private String content; //내용
-    private String imageUrls; //사진
-    private LocalDateTime createdTime; //생성시간
+
+    @Schema(description = "작성자 이메일", example = "user@example.com")
+    private String email;
+
+    @Schema(description = "감정", example = "EXCITED")
+    private Emotion emotion;
+
+    @Schema(description = "내용", example = "새로운 프로젝트를 시작했다!")
+    private String content;
+
+    @Schema(description = "이미지 URL 목록", example = "url")
+    private String imageUrls;
+
+    @Schema(description = "생성 시간", example = "2025-02-07T12:30:00")
+    private LocalDateTime createdTime;
 }
