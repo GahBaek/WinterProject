@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public interface DiaryRepository extends JpaRepository<Diary, UUID> {
+public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByUser(User user);
 
     // 특정 감정을 가진 일기 목록 조회

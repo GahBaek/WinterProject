@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiaryResponse {
-    private UUID diaryId;
+    private Long diaryId;
     private String email; // 작성자 이메일
     private Emotion emotion; //감정이모티콘
     private String content; //내용
