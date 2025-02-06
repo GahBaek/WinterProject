@@ -14,6 +14,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "user/**", "auth/join").permitAll()
+                        .requestMatchers("/diary/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(config -> config.disable())

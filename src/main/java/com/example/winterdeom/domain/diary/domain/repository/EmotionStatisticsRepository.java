@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface EmotionStatisticsRepository extends JpaRepository<EmotionStatistics, Long> {
+public interface EmotionStatisticsRepository extends JpaRepository<EmotionStatistics, UUID> {
 
     // 특정 감정에 대한 총 발생 횟수 조회
     @Query("SELECT SUM(e.count) FROM EmotionStatistics e WHERE e.emotion = :emotion")

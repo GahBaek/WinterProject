@@ -1,5 +1,6 @@
 package com.example.winterdeom.domain.diary.domain;
 
+import com.example.winterdeom.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmotionStatistics {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class EmotionStatistics extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "statistics_id", nullable = false)

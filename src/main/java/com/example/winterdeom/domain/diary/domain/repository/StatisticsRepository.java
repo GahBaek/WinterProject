@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface StatisticsRepository extends JpaRepository<Statistics, Long> {
+public interface StatisticsRepository extends JpaRepository<Statistics, UUID> {
 
     // 특정 월의 감정 통계 조회
     Optional<Statistics> findByMonth(LocalDate month);

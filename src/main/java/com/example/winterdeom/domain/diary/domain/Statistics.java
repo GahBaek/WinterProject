@@ -1,5 +1,6 @@
 package com.example.winterdeom.domain.diary.domain;
 
+import com.example.winterdeom.domain.common.BaseEntity;
 import com.example.winterdeom.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Statistics {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Statistics extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;  // 감정 통계를 가진 사용자

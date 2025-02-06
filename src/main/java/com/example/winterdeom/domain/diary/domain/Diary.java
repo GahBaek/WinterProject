@@ -16,10 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Diary extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;  // 작성한 사용자
@@ -30,7 +26,6 @@ public class Diary extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;  // 일기 내용
 
-    @ElementCollection
-    private List<String> imageUrls;  // 이미지 리스트
+    private String imageUrls; //이미지 파일
 
 }
