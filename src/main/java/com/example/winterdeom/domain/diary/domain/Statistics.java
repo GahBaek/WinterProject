@@ -1,5 +1,6 @@
 package com.example.winterdeom.domain.diary.domain;
 
+import com.example.winterdeom.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,10 @@ public class Statistics {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // 감정 통계를 가진 사용자
 
     @Column(nullable = false)
     private LocalDate month;  // 월별 통계

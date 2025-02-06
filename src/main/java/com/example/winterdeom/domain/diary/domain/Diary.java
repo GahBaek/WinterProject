@@ -1,6 +1,7 @@
 package com.example.winterdeom.domain.diary.domain;
 
 import com.example.winterdeom.domain.common.BaseEntity;
+import com.example.winterdeom.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,10 @@ public class Diary extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // 작성한 사용자
 
     @Enumerated(EnumType.STRING)
     private Emotion emotion;  // 감정
