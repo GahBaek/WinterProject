@@ -24,7 +24,7 @@ public class PostController {
 
     // 게시글 생성
     public ResponseEntity<ResponseDto<Void>> createPost (@AuthenticatedUser User user, CreatePostDto createPostDto){
-        this.postService.creatPost(user, createPostDto);
+        this.postService.createPost(user, createPostDto);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "create POST successfully"), HttpStatus.CREATED);
     }
 
