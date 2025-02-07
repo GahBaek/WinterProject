@@ -41,7 +41,7 @@ public class PostController {
 
     // 게시글 조회
     @Operation(summary = "전체 게시글 조회", description = "모든 게시글 조회")
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ResponseDto<PostResponseDataList>> getAllPosts (@Parameter(description = "조회하는 사용자 정보") @AuthenticatedUser User user){
         PostResponseDataList postResponseDataList = PostResponseDataList.from(this.postService.getAllPosts(user));
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "get all POSTs successfully", postResponseDataList), HttpStatus.OK);
@@ -58,7 +58,7 @@ public class PostController {
 
     // 본인이 작성한 게시글만 조회하기
     @Operation(summary = "본인이 작성한 게시글 조회", description = "사용자 Id를 이용하여 게시글 조회")
-    @GetMapping("/{postId}")
+    @GetMapping
     public ResponseEntity<ResponseDto<PostResponseDataList>> getPostByUser (@Parameter(description = "조회하는 사용자 정보") @AuthenticatedUser User user){
         PostResponseDataList postResponseData = PostResponseDataList.from(this.postService.getPostByUser(user));
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "get my POST successfully", postResponseData), HttpStatus.OK);
