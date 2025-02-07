@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Setter
@@ -18,6 +17,13 @@ public class Post extends BaseEntity {
 
     @Column(length = 100, nullable = false)
     private String title;
-    @Column(nullable = false)
+
+    @Column(length = 255, nullable = false)
     private String content;
+
+    public Post(User user, String title, String content) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+    }
 }
