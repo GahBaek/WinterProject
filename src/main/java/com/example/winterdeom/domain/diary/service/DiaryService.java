@@ -24,15 +24,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DiaryService {
+
     private final DiaryRepository diaryRepository;
 
-
-    //일기 작성
+    // 일기 작성
+    @Transactional
     public DiaryResponse createDiary(User user, DiaryRequest request) {
-        if (user == null) {
-            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
-        }
-
         Diary diary = Diary.builder()
                 .user(user)
                 .emotion(request.getEmotion())
@@ -43,61 +40,52 @@ public class DiaryService {
         diaryRepository.save(diary);
         return convertToDiaryResponse(diary);
     }
-    //일기 수정
+
+    // 일기 수정
     @Transactional
     public DiaryResponse updateDiary(User user, Long diaryId, DiaryUpdateRequest request) {
-        Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-
-        if (!diary.getUser().getId().equals(user.getId())) {
-            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
-        }
+        Diary diary = findDiaryOrThrow(diaryId);
+        validateDiaryOwner(user, diary);
 
         diary.update(request.getEmotion(), request.getContent(), request.getImageUrls());
 
         return convertToDiaryResponse(diary);
     }
 
+    // 일기 삭제
     @Transactional
     public void deleteDiary(User user, Long diaryId) {
-        Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-
-        if (!diary.getUser().getId().equals(user.getId())) {
-            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
-        }
+        Diary diary = findDiaryOrThrow(diaryId);
+        validateDiaryOwner(user, diary);
 
         diaryRepository.delete(diary);
     }
+
+    // 일기 조회
     @Transactional(readOnly = true)
     public DiaryResponse getDiary(User user, Long diaryId) {
-        Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
-
-        if (!diary.getUser().getId().equals(user.getId())) {
-            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
-        }
+        Diary diary = findDiaryOrThrow(diaryId);
+        validateDiaryOwner(user, diary);
 
         return convertToDiaryResponse(diary);
     }
 
-
-
+    // 사용자의 모든 일기 조회 (페이징)
     @Transactional(readOnly = true)
     public DiaryPageResponse getMyDiaries(User user, int page, int size) {
-        if (user == null) {
-            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
-        }
+        validateUser(user);
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Diary> diaryPage = diaryRepository.findByUser(user, pageable);
+
         return convertToDiaryPageResponse(diaryPage);
     }
 
+    // 감정별 일기 조회 (페이징)
     @Transactional(readOnly = true)
     public DiaryPageResponse getDiariesByEmotion(User user, Emotion emotion, int page, int size) {
-        if (user == null) {
-            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
-        }
+        validateUser(user);
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Diary> diaryPage = diaryRepository.findByEmotion(emotion, pageable);
 
@@ -106,10 +94,30 @@ public class DiaryService {
                 .collect(Collectors.toList());
 
         Page<Diary> filteredPage = new PageImpl<>(userDiaries, pageable, userDiaries.size());
+
         return convertToDiaryPageResponse(filteredPage);
     }
 
+    // ==========================  예외 처리 메서드  ==========================
 
+    private Diary findDiaryOrThrow(Long diaryId) {
+        return diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+    }
+
+    private void validateDiaryOwner(User user, Diary diary) {
+        if (!diary.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_USER);
+        }
+    }
+
+    private void validateUser(User user) {
+        if (user == null) {
+            throw new UnauthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+    }
+
+    // ==========================  DTO 변환 메서드  ==========================
 
     private DiaryResponse convertToDiaryResponse(Diary diary) {
         return DiaryResponse.builder()
@@ -126,13 +134,14 @@ public class DiaryService {
         return DiaryPageResponse.builder()
                 .content(diaryPage.getContent().stream()
                         .map(this::convertToDiarySummaryResponse)
-                        .collect(Collectors.toList())) // 개별 요약 리스트 변환
-                .currentPage(diaryPage.getNumber()) // 현재 페이지
-                .totalPages(diaryPage.getTotalPages()) // 전체 페이지 수
-                .totalElements(diaryPage.getTotalElements()) // 전체 개수
-                .last(diaryPage.isLast()) // 마지막 페이지 여부
+                        .collect(Collectors.toList()))
+                .currentPage(diaryPage.getNumber())
+                .totalPages(diaryPage.getTotalPages())
+                .totalElements(diaryPage.getTotalElements())
+                .last(diaryPage.isLast())
                 .build();
     }
+
     private DiarySummaryResponse convertToDiarySummaryResponse(Diary diary) {
         return DiarySummaryResponse.builder()
                 .diaryId(diary.getId())
@@ -140,6 +149,4 @@ public class DiaryService {
                 .content(diary.getContent())
                 .build();
     }
-
-
 }
