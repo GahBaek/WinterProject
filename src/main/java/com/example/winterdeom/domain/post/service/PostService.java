@@ -9,33 +9,30 @@ import com.example.winterdeom.domain.post.dto.response.PostResponseDataList;
 import com.example.winterdeom.domain.post.repository.PostRepository;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
 
     // 게시글 생성
     public void createPost (User user, CreatePostDto createPostDto){
+        log.info("create post");
         Post post = new Post(user, createPostDto.getTitle(), createPostDto.getContent());
-
         postRepository.save(post);
     }
 
     // 게시글 조회
-    public PostResponseDataList getAllPosts (User user){
-        List<PostResponseData> postList = new ArrayList<>();
-
-        for(Post post : postRepository.findAll()){
-            PostResponseData postResponseData = PostResponseData.from(post);
-            postList.add(postResponseData);
-        }
-
-        PostResponseDataList postResponseDataList = PostResponseDataList.from(postList);
-        return postResponseDataList;
+    public List<PostResponseData> getAllPosts (User user){
+        List<PostResponseData> postList = postRepository.findAll().stream()
+                .map(PostResponseData::from)
+                .toList();
+        return postList;
     }
 
     // 특정 게시글 조회
@@ -64,7 +61,7 @@ public class PostService {
 
     // 게시글 찾기
     private Post findPost(User user, UUID postId){
-        return postRepository.findByUserIdandId(user.getId(), postId)
+        return postRepository.findByUserIdAndId(user.getId(), postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND, "Post not found"));
     }
 }
