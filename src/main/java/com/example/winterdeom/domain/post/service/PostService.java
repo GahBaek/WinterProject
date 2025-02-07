@@ -42,6 +42,13 @@ public class PostService {
         return postResponseData;
     }
 
+    // 본인이 작성한 게시글 조회
+    public List<PostResponseData> getPostByUser(User user) {
+        List<PostResponseData> postList = postRepository.findByUserId().stream()
+                .map(PostResponseData::from)
+                .toList();
+        return postList;
+    }
     // 게시글 수정
     public PostResponseData modifyPostById (User user, UUID postId, CreatePostDto newPostDto){
         Post oldPost = findPost(user, postId);
