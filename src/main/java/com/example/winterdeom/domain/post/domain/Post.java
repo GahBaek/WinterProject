@@ -3,15 +3,13 @@ package com.example.winterdeom.domain.post.domain;
 import com.example.winterdeom.domain.common.BaseEntity;
 import com.example.winterdeom.domain.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
 @Entity(name = "post")
 public class Post extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
