@@ -126,7 +126,6 @@ public class DiaryService {
                 .emotion(diary.getEmotion())
                 .content(diary.getContent())
                 .imageUrls(diary.getImageUrls())
-                .createdTime(diary.getCreatedAt())
                 .build();
     }
 
