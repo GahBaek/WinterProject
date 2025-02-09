@@ -46,7 +46,7 @@ public class PostController {
             @Parameter(description = "게시글 작성자 정보") @AuthenticatedUser User user,
             @Valid @RequestBody CreatePostDto createPostDto){
         log.info("게시글 작성");
-        this.postService.createPost(user, createPostDto);
+        postService.createPost(user, createPostDto);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "create POST successfully"), HttpStatus.CREATED);
     }
 
@@ -60,7 +60,7 @@ public class PostController {
     })
     @GetMapping("/all")
     public ResponseEntity<ResponseDto<PostResponseDataList>> getAllPosts (@Parameter(description = "조회하는 사용자 정보") @AuthenticatedUser User user){
-        PostResponseDataList postResponseDataList = PostResponseDataList.from(this.postService.getAllPosts(user));
+        PostResponseDataList postResponseDataList = PostResponseDataList.from(postService.getAllPosts(user));
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "get all POSTs successfully", postResponseDataList), HttpStatus.OK);
     }
 
@@ -75,7 +75,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<ResponseDto<PostResponseData>> getPostById (@Parameter(description = "조회하는 사용자 정보") @AuthenticatedUser User user,
                                                                       @Parameter(description = "게시글 ID") @PathVariable UUID postId){
-        PostResponseData postResponseData = this.postService.getPostById(user, postId);
+        PostResponseData postResponseData = postService.getPostById(user, postId);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "get POST successfully", postResponseData), HttpStatus.OK);
     }
 
@@ -89,7 +89,7 @@ public class PostController {
     })
     @GetMapping()
     public ResponseEntity<ResponseDto<PostResponseDataList>> getPostByUser (@Parameter(description = "조회하는 사용자 정보") @AuthenticatedUser User user){
-        PostResponseDataList postResponseData = PostResponseDataList.from(this.postService.getPostByUser(user));
+        PostResponseDataList postResponseData = PostResponseDataList.from(postService.getPostByUser(user));
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "get my POST successfully", postResponseData), HttpStatus.OK);
     }
 
@@ -105,7 +105,7 @@ public class PostController {
     public ResponseEntity<ResponseDto<PostResponseData>> modifyPostById (@Parameter(description = "수정하는 사용자 정보") @AuthenticatedUser User user,
                                                                          @Parameter(description = "게시글 ID") @PathVariable UUID postId,
                                                                          @Valid @RequestBody CreatePostDto oldPost){
-        PostResponseData newPostData = this.postService.modifyPostById(user, postId, oldPost);
+        PostResponseData newPostData = postService.modifyPostById(user, postId, oldPost);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "modify POST successfully", newPostData), HttpStatus.OK);
     }
 
@@ -120,7 +120,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<ResponseDto<PostResponseData>> deletePostById (@Parameter(description = "삭제하는 사용자 정보") @AuthenticatedUser User user,
                                                                          @Parameter(description = "게시글 ID") @PathVariable UUID postId){
-        this.postService.deletePostById(user, postId);
+        postService.deletePostById(user, postId);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "delete POST successfully"), HttpStatus.OK);
     }
 }
