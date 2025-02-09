@@ -26,7 +26,11 @@ public class PostService {
     @Transactional
     public void createPost (User user, CreatePostDto createPostDto){
         log.info("create post");
-        Post post = new Post(user, createPostDto.getTitle(), createPostDto.getContent());
+        Post post = Post.builder()
+                .title(createPostDto.getTitle())
+                .content(createPostDto.getContent())
+                .user(user).build();
+
         postRepository.save(post);
     }
 
@@ -69,8 +73,7 @@ public class PostService {
     public PostResponseData modifyPostById (User user, UUID postId, CreatePostDto newPostDto){
         Post oldPost = findPost(user, postId);
 
-        oldPost.setTitle(newPostDto.getTitle());
-        oldPost.setContent(newPostDto.getContent());
+        oldPost.update(newPostDto.getTitle(), newPostDto.getContent());
         postRepository.save(oldPost);
         PostResponseData postResponseData = PostResponseData.from(oldPost);
         return postResponseData;
