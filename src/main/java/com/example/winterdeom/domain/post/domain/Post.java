@@ -19,4 +19,9 @@ public class Post extends BaseEntity {
 
     @Column(length = 255, nullable = false)
     private String content;
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
