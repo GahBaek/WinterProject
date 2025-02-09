@@ -29,7 +29,7 @@ public class DiaryService {
 
     // 일기 작성
     @Transactional
-    public DiaryResponse createDiary(User user, DiaryRequest request) {
+    public Long createDiary(User user, DiaryRequest request) {
         Diary diary = Diary.builder()
                 .user(user)
                 .emotion(request.getEmotion())
@@ -38,27 +38,27 @@ public class DiaryService {
                 .build();
 
         diaryRepository.save(diary);
-        return convertToDiaryResponse(diary);
+        return diary.getId();
     }
 
     // 일기 수정
     @Transactional
-    public DiaryResponse updateDiary(User user, Long diaryId, DiaryUpdateRequest request) {
+    public Long updateDiary(User user, Long diaryId, DiaryUpdateRequest request) {
         Diary diary = findDiaryOrThrow(diaryId);
         validateDiaryOwner(user, diary);
 
         diary.update(request.getEmotion(), request.getContent(), request.getImageUrls());
-
-        return convertToDiaryResponse(diary);
+        return diary.getId();
     }
 
     // 일기 삭제
     @Transactional
-    public void deleteDiary(User user, Long diaryId) {
+    public Long deleteDiary(User user, Long diaryId) {
         Diary diary = findDiaryOrThrow(diaryId);
         validateDiaryOwner(user, diary);
 
         diaryRepository.delete(diary);
+        return diaryId;
     }
 
     // 일기 조회

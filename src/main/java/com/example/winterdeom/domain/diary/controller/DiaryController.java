@@ -33,10 +33,11 @@ public class DiaryController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<ResponseDto<DiaryResponse>> createDiary(@AuthenticatedUser User user, @RequestBody DiaryRequest request) {
-        DiaryResponse diaryResponse = diaryService.createDiary(user, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.res(HttpStatus.CREATED, "일기 생성 성공"));
+    public ResponseEntity<ResponseDto<Long>> createDiary(@AuthenticatedUser User user, @RequestBody DiaryRequest request) {
+        Long diaryId = diaryService.createDiary(user, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.res(HttpStatus.CREATED, "일기 생성 성공", diaryId));
     }
+
 
     @Operation(summary = "일기 수정", description = "특정 일기를 수정합니다.")
     @ApiResponses(value = {
@@ -45,11 +46,11 @@ public class DiaryController {
             @ApiResponse(responseCode = "404", description = "일기 찾을 수 없음", content = @Content)
     })
     @PutMapping("/{diaryId}")
-    public ResponseEntity<ResponseDto<DiaryResponse>> updateDiary(@AuthenticatedUser User user,
-                                                                  @PathVariable Long diaryId,
-                                                                  @RequestBody DiaryUpdateRequest request) {
-        DiaryResponse updatedDiary = diaryService.updateDiary(user, diaryId, request);
-        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "일기 수정 성공", updatedDiary));
+    public ResponseEntity<ResponseDto<Long>> updateDiary(@AuthenticatedUser User user,
+                                                         @PathVariable Long diaryId,
+                                                         @RequestBody DiaryUpdateRequest request) {
+        Long updatedDiaryId = diaryService.updateDiary(user, diaryId, request);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "일기 수정 성공", updatedDiaryId));
     }
 
     @Operation(summary = "일기 삭제", description = "특정 일기를 삭제합니다.")
@@ -59,10 +60,9 @@ public class DiaryController {
             @ApiResponse(responseCode = "404", description = "일기 찾을 수 없음", content = @Content)
     })
     @DeleteMapping("/{diaryId}")
-    public ResponseEntity<ResponseDto<Void>> deleteDiary(@AuthenticatedUser User user,
-                                                         @PathVariable Long diaryId) {
-        diaryService.deleteDiary(user, diaryId);
-        return ResponseEntity.ok(ResponseDto.res(HttpStatus.NO_CONTENT, "일기 삭제 성공"));
+    public ResponseEntity<ResponseDto<Long>> deleteDiary(@AuthenticatedUser User user, @PathVariable Long diaryId) {
+        Long deletedDiaryId = diaryService.deleteDiary(user, diaryId);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.NO_CONTENT, "일기 삭제 성공", deletedDiaryId));
     }
 
     @Operation(summary = "일기 상세 조회", description = "특정 일기의 상세 정보를 조회합니다.")
