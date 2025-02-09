@@ -42,12 +42,12 @@ public class PostController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PostMapping
-    public ResponseEntity<ResponseDto<Void>> createPost (
+    public ResponseEntity<ResponseDto<PostResponseData>> createPost (
             @Parameter(description = "게시글 작성자 정보") @AuthenticatedUser User user,
             @Valid @RequestBody CreatePostDto createPostDto){
         log.info("게시글 작성");
-        postService.createPost(user, createPostDto);
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "create POST successfully"), HttpStatus.CREATED);
+        PostResponseData postResponseData = postService.createPost(user, createPostDto);
+        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "create POST successfully", postResponseData), HttpStatus.CREATED);
     }
 
 /*
