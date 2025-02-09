@@ -11,6 +11,7 @@ import com.example.winterdeom.domain.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -22,6 +23,7 @@ public class PostService {
     /*
     게시글 생성
      */
+    @Transactional
     public void createPost (User user, CreatePostDto createPostDto){
         log.info("create post");
         Post post = new Post(user, createPostDto.getTitle(), createPostDto.getContent());
@@ -31,6 +33,7 @@ public class PostService {
     /*
     모든 게시글 조회
      */
+    @Transactional(readOnly = true)
     public List<PostResponseData> getAllPosts (User user){
         List<PostResponseData> postList = postRepository.findAll().stream()
                 .map(PostResponseData::from)
@@ -41,6 +44,7 @@ public class PostService {
     /*
     특정 게시글 조회
      */
+    @Transactional(readOnly = true)
     public PostResponseData getPostById (User user, UUID postId) {
         Post post = findPost(user, postId);
         PostResponseData postResponseData = PostResponseData.from(post);
@@ -50,6 +54,7 @@ public class PostService {
     /*
     본인이 작성한 게시글들 조회
      */
+    @Transactional(readOnly = true)
     public List<PostResponseData> getPostByUser(User user) {
         List<PostResponseData> postList = postRepository.findByUserId(user.getId()).stream()
                 .map(PostResponseData::from)
@@ -60,6 +65,7 @@ public class PostService {
     /*
     게시글 수정
      */
+    @Transactional
     public PostResponseData modifyPostById (User user, UUID postId, CreatePostDto newPostDto){
         Post oldPost = findPost(user, postId);
 
@@ -73,6 +79,7 @@ public class PostService {
     /*
     게시글 삭제
      */
+    @Transactional
     public void deletePostById (User user, UUID postId){
         Post post = findPost(user, postId);
         postRepository.delete(post);
