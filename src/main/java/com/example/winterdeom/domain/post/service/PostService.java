@@ -24,7 +24,7 @@ public class PostService {
     게시글 생성
      */
     @Transactional
-    public void createPost (User user, CreatePostDto createPostDto){
+    public PostResponseData createPost (User user, CreatePostDto createPostDto){
         log.info("create post");
         Post post = Post.builder()
                 .title(createPostDto.getTitle())
@@ -32,6 +32,8 @@ public class PostService {
                 .user(user).build();
 
         postRepository.save(post);
+        PostResponseData postResponseData = PostResponseData.from(post);
+        return postResponseData;
     }
 
     /*
