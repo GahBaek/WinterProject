@@ -104,8 +104,8 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<ResponseDto<PostResponseData>> modifyPostById (@Parameter(description = "수정하는 사용자 정보") @AuthenticatedUser User user,
                                                                          @Parameter(description = "게시글 ID") @PathVariable UUID postId,
-                                                                         @Valid @RequestBody CreatePostDto oldPost){
-        PostResponseData newPostData = postService.modifyPostById(user, postId, oldPost);
+                                                                         @Valid @RequestBody CreatePostDto newPost){
+        PostResponseData newPostData = postService.modifyPostById(user, postId, newPost);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "modify POST successfully", newPostData), HttpStatus.OK);
     }
 
