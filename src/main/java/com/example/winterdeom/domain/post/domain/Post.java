@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity(name = "post")
 public class Post extends BaseEntity {
