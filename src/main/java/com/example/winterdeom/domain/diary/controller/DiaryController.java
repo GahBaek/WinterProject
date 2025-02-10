@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/diary")
+@RequestMapping("/api/v1/diarys")
 @RequiredArgsConstructor
 @Tag(name = "Diary API", description = "일기 관련 API")
 public class DiaryController {
@@ -95,7 +95,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "200", description = "감정별 일기 목록 조회 성공", content = @Content(schema = @Schema(implementation = ResponseDto.class))),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", content = @Content)
     })
-    @GetMapping("/emotion")
+    @GetMapping("/emotions")
     public ResponseEntity<ResponseDto<DiaryPageResponse>> getDiariesByEmotion(
             @AuthenticatedUser User user,
             @RequestParam(name = "emotion") Emotion emotion,
