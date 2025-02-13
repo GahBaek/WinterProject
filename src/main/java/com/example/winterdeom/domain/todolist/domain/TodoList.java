@@ -3,6 +3,7 @@ package com.example.winterdeom.domain.todolist.domain;
 import com.example.winterdeom.domain.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -26,6 +27,12 @@ public class TodoList {
     @Column(nullable = false)
     private LocalDate date;  // 해당 투두리스트의 날짜
 
-//    @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<TodoItem> items;  // 해당 날짜의 할 일 목록
+    @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TodoItem> items;  // 해당 날짜의 할 일 목록
+
+    @Builder
+    public TodoList(User user, LocalDate date){
+        this.user = user;
+        this.date = date;
+    }
 }
