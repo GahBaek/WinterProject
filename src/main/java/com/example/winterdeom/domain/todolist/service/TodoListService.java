@@ -19,11 +19,10 @@ public class TodoListService {
     // 투두리스트 생성
     @Transactional
     public Long createTodoList(User user, TodoListReq todoListReq) {
-        LocalDate date = LocalDate.parse(todoListReq.getDate());
 
         TodoList todoList = TodoList.builder()
                 .user(user)
-                .date(date)
+                .date(todoListReq.getDate())
                 .build();
 
         todoListRepository.save(todoList);
