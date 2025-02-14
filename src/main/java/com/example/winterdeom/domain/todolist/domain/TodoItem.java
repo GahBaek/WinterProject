@@ -2,6 +2,7 @@ package com.example.winterdeom.domain.todolist.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,11 @@ public class TodoItem {
 
     @Column(nullable = false)
     private Boolean completed = false;  // 완료 여부
+
+    @Builder
+    public TodoItem(TodoList todoList, String title, Boolean completed){
+        this.todoList = todoList;
+        this.title = title;
+        this.completed = completed;
+    }
 }
