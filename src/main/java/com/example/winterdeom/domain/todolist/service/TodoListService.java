@@ -7,12 +7,18 @@ import com.example.winterdeom.domain.todolist.domain.repository.TodoListReposito
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemUpdateReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoListReq;
+import com.example.winterdeom.domain.todolist.dto.response.TodoItemResponse;
+import com.example.winterdeom.domain.todolist.dto.response.TodoListResponse;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +66,12 @@ public class TodoListService {
 
     }
 
+    // 특정 날짜의 투두리스트 조회
+    public List<TodoListResponse> getTodoListsByDate(User user, LocalDate date) {
+        List<TodoList> todoLists = todoListRepository.findByUserAndDate(user, date);
+        return convertToTodoListResponse(todoLists);
+    }
+
     // ==========================  예외 처리 메서드  ==========================
 
     // 특정 ID의 할 일 조회
@@ -74,5 +86,29 @@ public class TodoListService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 투두리스트를 찾을 수 없습니다."));
     }
 
+    // ==========================  DTO 변환 메서드  ==========================
 
+    // 투두리스트 엔티티 리스트를 DTO리스트로 변환
+    private List<TodoListResponse> convertToTodoListResponse(List<TodoList> todoLists) {
+        return todoLists.stream()
+                .map(todoList -> TodoListResponse.builder()
+                        .id(todoList.getId())
+                        .date(todoList.getDate())
+                        .items(convertToTodoItemResponse(todoList))
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
+    // 개별 투두리스트 내의 할 일 목록을 DTO리스트로 변환
+    private List<TodoItemResponse> convertToTodoItemResponse(TodoList todoList) {
+        return todoList.getItems().stream()
+                .map(todoItem -> TodoItemResponse.builder()
+                        .id(todoItem.getId())
+                        .title(todoItem.getTitle())
+                        .completed(todoItem.getCompleted())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
 }

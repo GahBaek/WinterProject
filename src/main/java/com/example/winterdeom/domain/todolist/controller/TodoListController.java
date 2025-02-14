@@ -4,6 +4,7 @@ import com.example.winterdeom.domain.common.ResponseDto;
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemUpdateReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoListReq;
+import com.example.winterdeom.domain.todolist.dto.response.TodoListResponse;
 import com.example.winterdeom.domain.todolist.service.TodoListService;
 import com.example.winterdeom.domain.user.domain.User;
 import com.example.winterdeom.global.auth.AuthenticatedUser;
@@ -18,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Tag(name = "투두리스트 API", description = "투두리스트 관련 API")
 @RestController
@@ -69,10 +73,27 @@ public class TodoListController {
     @PutMapping("/item/{todoItemId}")
     public ResponseEntity<?> updateTodoItem(
             @AuthenticatedUser User user,
-            @Parameter(description = "수정할 투두 항목 아이디", required = true) @PathVariable Long todoItemId,
+            @Parameter(description = "수정할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId,
             @Parameter(description = "수정할 투두항목을 입력해주세요. Schemas의 TodoItemUpdateReq를 참고해주세요.", required = true) @RequestBody TodoItemUpdateReq todoItemUpdateReq
     ) {
         todoListService.updateTodoItem(user, todoItemId, todoItemUpdateReq);
         return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 정상적으로 수정되었습니다."));
+    }
+
+    @Operation(summary = "특정 날짜의 투두리스트 조회", description = "특정 날짜의 투두리스트 및 할 일 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투두리스트 조회에 성공하였습니다.",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TodoListResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 날짜 형식입니다.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content)
+    })
+    @GetMapping
+    public ResponseEntity<?> getTodoListsByDate(
+            @AuthenticatedUser User user,
+            @RequestParam("date") LocalDate date
+    ) {
+        List<TodoListResponse> todoLists = todoListService.getTodoListsByDate(user, date);
+        return ResponseEntity.ok(todoLists);
     }
 }
