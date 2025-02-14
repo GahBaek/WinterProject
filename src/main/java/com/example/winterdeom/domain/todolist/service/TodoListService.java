@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,8 +38,7 @@ public class TodoListService {
     // 할 일 추가
     @Transactional
     public void addTodoItem(User user, TodoItemReq todoItemReq) {
-        TodoList todoList = todoListRepository.findById(todoItemReq.getTodoListId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 투두리스트를 찾을 수 없습니다."));
+        TodoList todoList = findTodoListById(todoItemReq.getTodoListId());
 
         TodoItem todoItem = TodoItem.builder()
                 .todoList(todoList)
@@ -55,13 +52,27 @@ public class TodoListService {
     // 할 일 수정
     @Transactional
     public void updateTodoItem(User user, Long todoItemId, TodoItemUpdateReq todoItemUpdateReq) {
-        TodoItem todoItem = todoItemRepository.findById(todoItemId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 할 일을 찾을 수 없습니다."));
+        TodoItem todoItem = findTodoItemById(todoItemId);
 
         todoItem.update(todoItemUpdateReq.getTitle(), todoItemUpdateReq.getCompleted());
 
         todoItemRepository.save(todoItem);
 
     }
+
+    // ==========================  예외 처리 메서드  ==========================
+
+    // 특정 ID의 할 일 조회
+    private TodoItem findTodoItemById(Long todoItemId) {
+        return todoItemRepository.findById(todoItemId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 할 일을 찾을 수 없습니다."));
+    }
+
+    // 특정 ID의 투두리스트 조회
+    private TodoList findTodoListById(Long todoListID){
+        return todoListRepository.findById(todoListID)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 투두리스트를 찾을 수 없습니다."));
+    }
+
 
 }
