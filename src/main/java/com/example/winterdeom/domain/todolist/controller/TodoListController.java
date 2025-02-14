@@ -2,6 +2,7 @@ package com.example.winterdeom.domain.todolist.controller;
 
 import com.example.winterdeom.domain.common.ResponseDto;
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemReq;
+import com.example.winterdeom.domain.todolist.dto.request.TodoItemUpdateReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoListReq;
 import com.example.winterdeom.domain.todolist.service.TodoListService;
 import com.example.winterdeom.domain.user.domain.User;
@@ -16,12 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 @Tag(name = "투두리스트 API", description = "투두리스트 관련 API")
 @RestController
 @RequestMapping("/api/v1/todolist")
@@ -62,4 +59,20 @@ public class TodoListController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDto.res(HttpStatus.CREATED, "할 일이 정상적으로 추가되었습니다."));
     }
 
+    @Operation(summary = "할 일 수정", description = "특정 할 일을 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일이 정상적으로 수정되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 형식입니다.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
+    })
+    @PutMapping("/item/{todoItemId}")
+    public ResponseEntity<?> updateTodoItem(
+            @AuthenticatedUser User user,
+            @Parameter(description = "수정할 투두 항목 아이디", required = true) @PathVariable Long todoItemId,
+            @Parameter(description = "수정할 투두항목을 입력해주세요. Schemas의 TodoItemUpdateReq를 참고해주세요.", required = true) @RequestBody TodoItemUpdateReq todoItemUpdateReq
+    ) {
+        todoListService.updateTodoItem(user, todoItemId, todoItemUpdateReq);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 정상적으로 수정되었습니다."));
+    }
 }

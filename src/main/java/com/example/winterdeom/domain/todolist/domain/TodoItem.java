@@ -32,4 +32,9 @@ public class TodoItem {
         this.title = title;
         this.completed = completed;
     }
+
+    public void update(String title, Boolean completed) {
+        this.title = title;
+        this.completed = completed;
+    }
 }

@@ -5,6 +5,7 @@ import com.example.winterdeom.domain.todolist.domain.TodoList;
 import com.example.winterdeom.domain.todolist.domain.repository.TodoItemRepository;
 import com.example.winterdeom.domain.todolist.domain.repository.TodoListRepository;
 import com.example.winterdeom.domain.todolist.dto.request.TodoItemReq;
+import com.example.winterdeom.domain.todolist.dto.request.TodoItemUpdateReq;
 import com.example.winterdeom.domain.todolist.dto.request.TodoListReq;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -50,4 +51,17 @@ public class TodoListService {
 
         todoItemRepository.save(todoItem);
     }
+
+    // 할 일 수정
+    @Transactional
+    public void updateTodoItem(User user, Long todoItemId, TodoItemUpdateReq todoItemUpdateReq) {
+        TodoItem todoItem = todoItemRepository.findById(todoItemId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 할 일을 찾을 수 없습니다."));
+
+        todoItem.update(todoItemUpdateReq.getTitle(), todoItemUpdateReq.getCompleted());
+
+        todoItemRepository.save(todoItem);
+
+    }
+
 }
