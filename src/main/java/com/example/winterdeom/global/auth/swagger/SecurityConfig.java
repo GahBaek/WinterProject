@@ -15,6 +15,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/user/**", "/auth/join").permitAll()
                         .requestMatchers("/api/v1/diary/**").permitAll()
+                        .requestMatchers("/api/v1/todolist/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(config -> config.disable())
