@@ -59,9 +59,9 @@ public class TodoListService {
     @Transactional
     public void updateTodoItem(User user, Long todoItemId, TodoItemUpdateReq todoItemUpdateReq) {
         TodoItem todoItem = findTodoItemById(todoItemId);
+        validateTodoItemOwnership(user, todoItem);
         todoItem.update(todoItemUpdateReq.getTitle(), todoItemUpdateReq.getCompleted());
         todoItemRepository.save(todoItem);
-
     }
 
     // 특정 날짜의 투두리스트 조회
@@ -74,6 +74,7 @@ public class TodoListService {
     @Transactional
     public void toggleTodoItemStatus(User user, Long todoItemId) {
         TodoItem todoItem = findTodoItemById(todoItemId);
+        validateTodoItemOwnership(user, todoItem);
         todoItem.update(todoItem.getTitle(), !todoItem.getCompleted());
         todoItemRepository.save(todoItem);
     }
@@ -82,6 +83,7 @@ public class TodoListService {
     @Transactional
     public void deleteTodoItem(User user, Long todoItemId) {
         TodoItem todoItem = findTodoItemById(todoItemId);
+        validateTodoItemOwnership(user, todoItem);
         todoItemRepository.delete(todoItem);
     }
 
@@ -89,10 +91,11 @@ public class TodoListService {
     @Transactional
     public void deleteTodoList(User user, Long todoListId) {
         TodoList todoList = findTodoListById(todoListId);
+        validateTodoListOwnership(user, todoList);
         todoListRepository.delete(todoList);
     }
 
-    // ==========================  예외 처리 메서드  ==========================
+    // ========================== 특정 ID로 조회하는 메서드  ==========================
 
     // 특정 ID의 할 일 조회
     private TodoItem findTodoItemById(Long todoItemId) {
@@ -104,6 +107,22 @@ public class TodoListService {
     private TodoList findTodoListById(Long todoListID){
         return todoListRepository.findById(todoListID)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 투두리스트를 찾을 수 없습니다."));
+    }
+
+    // ============================  본인 확인 메서드  ================================
+
+    // 특정 ID의 할 일 조회 (본인 확인 로직 추가)
+    private void validateTodoItemOwnership(User user, TodoItem todoItem) {
+        if (!todoItem.getTodoList().getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 할 일만 수정/삭제할 수 있습니다.");
+        }
+    }
+
+    // 특정 ID의 투두리스트 조회 (본인 확인 로직 추가)
+    private void validateTodoListOwnership(User user, TodoList todoList) {
+        if (!todoList.getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 투두리스트만 수정/삭제할 수 있습니다.");
+        }
     }
 
     // ==========================  DTO 변환 메서드  ==========================
