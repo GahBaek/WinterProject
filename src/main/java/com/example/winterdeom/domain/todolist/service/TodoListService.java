@@ -59,9 +59,7 @@ public class TodoListService {
     @Transactional
     public void updateTodoItem(User user, Long todoItemId, TodoItemUpdateReq todoItemUpdateReq) {
         TodoItem todoItem = findTodoItemById(todoItemId);
-
         todoItem.update(todoItemUpdateReq.getTitle(), todoItemUpdateReq.getCompleted());
-
         todoItemRepository.save(todoItem);
 
     }
@@ -70,6 +68,14 @@ public class TodoListService {
     public List<TodoListResponse> getTodoListsByDate(User user, LocalDate date) {
         List<TodoList> todoLists = todoListRepository.findByUserAndDate(user, date);
         return convertToTodoListResponse(todoLists);
+    }
+
+    // 할 일 완료 상태 변경
+    @Transactional
+    public void toggleTodoItemStatus(User user, Long todoItemId) {
+        TodoItem todoItem = findTodoItemById(todoItemId);
+        todoItem.update(todoItem.getTitle(), !todoItem.getCompleted());
+        todoItemRepository.save(todoItem);
     }
 
     // ==========================  예외 처리 메서드  ==========================
@@ -111,4 +117,6 @@ public class TodoListService {
                 )
                 .collect(Collectors.toList());
     }
+
+
 }

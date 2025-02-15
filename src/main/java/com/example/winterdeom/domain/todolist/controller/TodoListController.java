@@ -96,4 +96,20 @@ public class TodoListController {
         List<TodoListResponse> todoLists = todoListService.getTodoListsByDate(user, date);
         return ResponseEntity.ok(todoLists);
     }
+
+    @Operation(summary = "할 일 완료 상태 변경", description = "특정 할 일의 완료 상태를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 상태가 변경되었습니다.",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
+    })
+    @PatchMapping("/item/{todoItemId}/status")
+    public ResponseEntity<?> toggleTodoItemStatus(
+            @AuthenticatedUser User user,
+            @Parameter(description = "상태 변경할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId
+    ) {
+        todoListService.toggleTodoItemStatus(user, todoItemId);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 상태가 정상적으로 변경되었습니다."));
+    }
+
 }
