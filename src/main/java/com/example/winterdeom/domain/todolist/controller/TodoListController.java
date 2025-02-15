@@ -99,8 +99,8 @@ public class TodoListController {
 
     @Operation(summary = "할 일 완료 상태 변경", description = "특정 할 일의 완료 상태를 변경합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "할 일 상태가 변경되었습니다.",
-                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "200", description = "할 일이 상태가 변경되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
     })
     @PatchMapping("/item/{todoItemId}/status")
@@ -111,5 +111,22 @@ public class TodoListController {
         todoListService.toggleTodoItemStatus(user, todoItemId);
         return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 상태가 정상적으로 변경되었습니다."));
     }
+
+    @Operation(summary = "특정 할 일 삭제", description = "할 일을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일이 수정되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일", content = @Content)
+    })
+    @DeleteMapping("/item/{todoItemId}")
+    public ResponseEntity<?> deleteTodoItem(
+            @AuthenticatedUser User user,
+            @Parameter(description = "삭제할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId
+    ) {
+        todoListService.deleteTodoItem(user, todoItemId);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 상태가 정상적으로 삭제되었습니다."));
+    }
+
+
 
 }

@@ -78,6 +78,13 @@ public class TodoListService {
         todoItemRepository.save(todoItem);
     }
 
+    // 특정 할 일 삭제
+    @Transactional
+    public void deleteTodoItem(User user, Long todoItemId) {
+        TodoItem todoItem = findTodoItemById(todoItemId);
+        todoItemRepository.delete(todoItem);
+    }
+
     // ==========================  예외 처리 메서드  ==========================
 
     // 특정 ID의 할 일 조회
