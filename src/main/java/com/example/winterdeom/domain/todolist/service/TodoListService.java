@@ -85,6 +85,13 @@ public class TodoListService {
         todoItemRepository.delete(todoItem);
     }
 
+    // 투두리스트 삭제(연관된 할 일도 같이 삭제됨)
+    @Transactional
+    public void deleteTodoList(User user, Long todoListId) {
+        TodoList todoList = findTodoListById(todoListId);
+        todoListRepository.delete(todoList);
+    }
+
     // ==========================  예외 처리 메서드  ==========================
 
     // 특정 ID의 할 일 조회

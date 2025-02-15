@@ -116,7 +116,7 @@ public class TodoListController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "할 일이 수정되었습니다.",
                     content = @Content(schema = @Schema(implementation = ResponseDto.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일", content = @Content)
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
     })
     @DeleteMapping("/item/{todoItemId}")
     public ResponseEntity<?> deleteTodoItem(
@@ -124,9 +124,22 @@ public class TodoListController {
             @Parameter(description = "삭제할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId
     ) {
         todoListService.deleteTodoItem(user, todoItemId);
-        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 상태가 정상적으로 삭제되었습니다."));
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "할 일이 정상적으로 삭제되었습니다."));
     }
 
-
+    @Operation(summary = "투두리스트 삭제", description = "투두리스트를 삭제하면, 연관된 할 일도 모두 삭제됩니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "투두리스트가 삭제되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 투두리스트입니다.", content = @Content)
+    })
+    @DeleteMapping("/{todoListId}")
+    public ResponseEntity<?> deleteTodoList(
+            @AuthenticatedUser User user,
+            @Parameter(description = "삭제할 투두리스트 아이디를 입력해주세요", required = true) @PathVariable Long todoListId
+    ) {
+        todoListService.deleteTodoList(user, todoListId);
+        return ResponseEntity.ok(ResponseDto.res(HttpStatus.OK, "투두리스트가 정상적으로 삭제되었습니다."));
+    }
 
 }
