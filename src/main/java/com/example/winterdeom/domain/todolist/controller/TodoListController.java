@@ -38,7 +38,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<?> createTodoList(
+    public ResponseEntity<ResponseDto<Long>> createTodoList(
             @AuthenticatedUser User user,
             @Parameter(description = "투두리스트 날짜를 입력해주세요. Schemas의 TodoListReq를 참고해주세요.", required = true) @RequestBody TodoListReq todoListReq
     ){
@@ -55,7 +55,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 투두리스트입니다.", content = @Content)
     })
     @PostMapping("/item")
-    public ResponseEntity<?> addTodoItem(
+    public ResponseEntity<ResponseDto<Void>> addTodoItem(
             @AuthenticatedUser User user,
             @Parameter(description = "투두리스트에 추가할 할 일을 입력해주세요. Schemas의 TodoItemReq를 참고해주세요.", required = true) @RequestBody TodoItemReq todoItemReq
     ) {
@@ -71,7 +71,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
     })
     @PutMapping("/item/{todoItemId}")
-    public ResponseEntity<?> updateTodoItem(
+    public ResponseEntity<ResponseDto<Void>> updateTodoItem(
             @AuthenticatedUser User user,
             @Parameter(description = "수정할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId,
             @Parameter(description = "수정할 투두항목을 입력해주세요. Schemas의 TodoItemUpdateReq를 참고해주세요.", required = true) @RequestBody TodoItemUpdateReq todoItemUpdateReq
@@ -89,7 +89,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<?> getTodoListsByDate(
+    public ResponseEntity<List<TodoListResponse>> getTodoListsByDate(
             @AuthenticatedUser User user,
             @RequestParam("date") LocalDate date
     ) {
@@ -104,7 +104,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
     })
     @PatchMapping("/item/{todoItemId}/status")
-    public ResponseEntity<?> toggleTodoItemStatus(
+    public ResponseEntity<ResponseDto<Void>> toggleTodoItemStatus(
             @AuthenticatedUser User user,
             @Parameter(description = "상태 변경할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId
     ) {
@@ -119,7 +119,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 할 일입니다.", content = @Content)
     })
     @DeleteMapping("/item/{todoItemId}")
-    public ResponseEntity<?> deleteTodoItem(
+    public ResponseEntity<ResponseDto<Void>> deleteTodoItem(
             @AuthenticatedUser User user,
             @Parameter(description = "삭제할 투두 항목 아이디를 입력해주세요", required = true) @PathVariable Long todoItemId
     ) {
@@ -134,7 +134,7 @@ public class TodoListController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 투두리스트입니다.", content = @Content)
     })
     @DeleteMapping("/{todoListId}")
-    public ResponseEntity<?> deleteTodoList(
+    public ResponseEntity<ResponseDto<Void>> deleteTodoList(
             @AuthenticatedUser User user,
             @Parameter(description = "삭제할 투두리스트 아이디를 입력해주세요", required = true) @PathVariable Long todoListId
     ) {
