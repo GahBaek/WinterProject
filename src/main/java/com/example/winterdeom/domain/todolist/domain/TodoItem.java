@@ -16,7 +16,7 @@ public class TodoItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) //LAZY로딩 적용
     @JoinColumn(name = "list_id", nullable = false)
     private TodoList todoList;  // 할 일이 속한 투두리스트
 
