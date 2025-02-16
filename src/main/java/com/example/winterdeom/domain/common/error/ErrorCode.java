@@ -19,10 +19,14 @@ public enum ErrorCode {
 
     // 403 Forbidden
     FORBIDDEN_USER("4030", "접근 권한이 없습니다."),
+    FORBIDDEN_TODO_ITEM("4031", "본인이 작성한 할 일만 수정/삭제할 수 있습니다."),
+    FORBIDDEN_TODO_LIST("4032", "본인이 작성한 투두리스트만 수정/삭제할 수 있습니다."),
 
     // 404 Not Found
     POST_NOT_FOUND("4040", "해당 포스트를 찾을 수 없습니다."),
     USER_NOT_FOUND("4041", "해당 유저를 찾을 수 없습니다. "),
+    TODO_ITEM_NOT_FOUND("4042", "해당 할 일을 찾을 수 없습니다."),
+    TODO_LIST_NOT_FOUND("4043", "해당 투두리스트를 찾을 수 없습니다."),
 
     // 405 Using wrong HTTP Method
     WRONG_METHOD("4050", "허용되지 않은 메소드 입니다."),

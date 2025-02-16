@@ -1,5 +1,8 @@
 package com.example.winterdeom.domain.todolist.service;
 
+import com.example.winterdeom.domain.common.error.ErrorCode;
+import com.example.winterdeom.domain.common.exception.ForbiddenException;
+import com.example.winterdeom.domain.common.exception.NotFoundException;
 import com.example.winterdeom.domain.todolist.domain.TodoItem;
 import com.example.winterdeom.domain.todolist.domain.TodoList;
 import com.example.winterdeom.domain.todolist.domain.repository.TodoItemRepository;
@@ -11,10 +14,8 @@ import com.example.winterdeom.domain.todolist.dto.response.TodoItemResponse;
 import com.example.winterdeom.domain.todolist.dto.response.TodoListResponse;
 import com.example.winterdeom.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -100,28 +101,26 @@ public class TodoListService {
     // 특정 ID의 할 일 조회
     private TodoItem findTodoItemById(Long todoItemId) {
         return todoItemRepository.findById(todoItemId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 할 일을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TODO_ITEM_NOT_FOUND));
     }
 
     // 특정 ID의 투두리스트 조회
     private TodoList findTodoListById(Long todoListID){
         return todoListRepository.findById(todoListID)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "해당 투두리스트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.TODO_LIST_NOT_FOUND));
     }
 
     // ============================  본인 확인 메서드  ================================
 
-    // 특정 ID의 할 일 조회 (본인 확인 로직 추가)
     private void validateTodoItemOwnership(User user, TodoItem todoItem) {
-        if (!todoItem.getTodoList().getUser().getId().equals(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 할 일만 수정/삭제할 수 있습니다.");
+        if (!todoItem.getTodoList().getUser().equals(user)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_TODO_ITEM);
         }
     }
 
-    // 특정 ID의 투두리스트 조회 (본인 확인 로직 추가)
     private void validateTodoListOwnership(User user, TodoList todoList) {
-        if (!todoList.getUser().getId().equals(user.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "본인이 작성한 투두리스트만 수정/삭제할 수 있습니다.");
+        if (!todoList.getUser().equals(user)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_TODO_LIST);
         }
     }
 
